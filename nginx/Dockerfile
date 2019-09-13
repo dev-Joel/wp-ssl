@@ -16,11 +16,11 @@ RUN apk add --update \
       py-pip \
     && pip install --upgrade pip
 
-RUN addgroup staff
-RUN addgroup www-data
-RUN adduser -h /home/dev/ -D -g "" -G staff dev
-RUN adduser -S -H -g "" -G www-data www-data
-RUN echo dev:trolls | chpasswd
+RUN addgroup staff \
+    && addgroup www-data \
+    && adduser -h /home/dev/ -D -g "" -G staff dev \
+    && adduser -S -H -g "" -G www-data www-data \
+    && echo dev:trolls | chpasswd
 
 ##
 # copying nginx configuration file
@@ -32,6 +32,6 @@ RUN chown root:staff /etc/nginx/nginx.conf
 # copies over the startup file which handles initializing the nginx
 # server and the SSL certification process (if necessary)
 COPY startup.sh /bin/startup.sh
-RUN chown root:root /bin/startup.sh
-RUN chmod ug+rx /bin/startup.sh
-RUN chmod go-w /bin/startup.sh
+RUN chown root:root /bin/startup.sh \
+    && chmod ug+rx /bin/startup.sh \
+    && chmod go-w /bin/startup.sh
