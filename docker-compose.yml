@@ -1,0 +1,36 @@
+services:
+  nginx:
+    container_name: nginx-wordpress
+    image: nginx:latest
+    ports:
+      - '80'
+      - '443'
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./logs/nginx:/var/log/nginx
+      - ./wordpress:/var/www/html
+    depends_on:
+      - wordpress
+    restart: always
+    networks:
+      - nginxproxy_default
+  wordpress:
+    container_name: wp
+    image: wordpress-prod:4.8.1-php5.6-fpm
+    ports:
+      - '9000'
+    volumes:
+      - ./wordpress:/var/www/html
+    environment:
+      - WORDPRESS_DB_NAME=<database name>
+      - WORDPRESS_TABLE_PREFIX=<table prefix>
+      - WORDPRESS_DB_HOST=<sql host>
+      - WORDPRESS_DB_USER=<db user>
+      - WORDPRESS_DB_PASSWORD=<sql password>
+    restart: always
+    networks:
+      - nginxproxy_default
+networks:
+  nginxproxy_default:
+    external: true
