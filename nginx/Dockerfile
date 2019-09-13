@@ -14,9 +14,7 @@ RUN apk add --update \
       certbot \
       python \
       py-pip \
-    && pip install --upgrade pip \
-    && pip install 'certbot-nginx' \
-    && pip install 'pyopenssl'
+    && pip install --upgrade pip
 
 RUN addgroup staff
 RUN addgroup www-data
@@ -30,10 +28,6 @@ RUN echo dev:trolls | chpasswd
 
 COPY nginx.conf /etc/nginx/nginx.conf
 RUN chown root:staff /etc/nginx/nginx.conf
-
-# adds certbot cert renewal job to cron
-COPY crontab /tmp/crontab-certbot
-RUN (crontab -l; cat /tmp/crontab-certbot) | crontab -
 
 # copies over the startup file which handles initializing the nginx
 # server and the SSL certification process (if necessary)
